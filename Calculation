@@ -1,0 +1,66 @@
+import java.util.Scanner;
+
+public class Calculation {
+
+	static double robotMass;
+	static double a;
+
+	public static void main(String[] args) {
+
+		Scanner in = new Scanner(System.in);
+
+		System.out.println("Enter the mass of Robot in kg (weight/9.8):");
+		robotMass = in.nextDouble();
+		System.out.println("Force Needed to stay at lower zone is "
+				+ Math.round(Math.abs(ForceNeededLow(robotMass)) * 100) / 100
+				+ "N+");
+		System.out.println("Force Needed to stay at high zone is "
+				+ Math.round(Math.abs(ForceNeededHi(robotMass)) * 100) / 100
+				+ "N+");
+		System.out.println("Coefficient of friction needed is "
+				+ CoefficientFriction(robotMass));
+
+		System.out.println("");
+
+		System.out.println("Force going up?");
+		double forceUp = in.nextDouble();
+		double realCoefficient = (ForceNeededHi(robotMass) + forceUp)
+				/ (Math.abs(robotMass * 9.8 * Math.cos(Math.PI / 6)));
+		System.out.println("With " + forceUp
+				+ "N going up, coefficient of friction " + realCoefficient
+				+ " is required.");
+
+		System.out.println("");
+
+		System.out
+				.println("To find out torque needed, enter size of the wheel (meter):");
+		double wheelSize = in.nextDouble();
+		System.out.println("Acceleration?");
+		a = in.nextDouble();
+		System.out.println("Torque needed to achieve " + a
+				+ "m/s^2 accleration is " + TorqueNeeded(wheelSize) + "Nm");
+
+	}
+
+	public static double ForceNeededLow(double robot) {
+		double g = 9.8;
+		return (double) (robot * g * Math.sin((Math.PI) / 6));
+	}
+
+	public static double ForceNeededHi(double robot) {
+		double g = 9.8;
+		return (double) (robot * g * Math.sin((Math.PI) / 4));
+	}
+
+	public static double CoefficientFriction(double robot) {
+		double g = 9.8;
+		double normalForce = Math.abs(robot * g * Math.cos(Math.PI / 6));
+		double cFriction = (ForceNeededLow(robot)) / normalForce;
+		return cFriction;
+	}
+
+	public static double TorqueNeeded(double wheel) {
+		double g = 9.8;
+		return (a + g * Math.sin(Math.PI / 6) * robotMass * wheel);
+	}
+}
